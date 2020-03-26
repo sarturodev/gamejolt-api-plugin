@@ -3,7 +3,7 @@ extends Node
 const GAME_API: String =  "https://api.gamejolt.com/api/game/v1_2/"
 const GAME_ID : String = "478958"
 const SECURE_KEY: String = "f9e9a1077e7d5d77727bd9e81f0c4192"
-enum {NONE, ADD_SCORE, GET_RANK, FETCH_SCORE, ADD_ACHIEVED}
+enum {NONE, ADD_SCORE, GET_RANK, FETCH_SCORE, FETCH_TROPHIES, ADD_ACHIEVED, REMOVE_ACHIEVED}
 var GameJoltAPIRequest = preload("res://utils/gamejolt_api/gamejolt_api_request/GameJoltAPIRequest.tscn")
 
 #--- SCORES
@@ -28,12 +28,23 @@ func fetch_score(params: Dictionary) -> GameJoltAPIRequest:
 
 #--- TROPHIES
 
+func fetch_trophies(params: Dictionary) -> GameJoltAPIRequest:
+	var request_template: String = ""
+	var parsed_params: String = parse_parameters(params)
+	request_template = "%strophies/?game_id=%s&%s" % [GAME_API, GAME_ID, parsed_params]
+	return send_request(request_template, FETCH_TROPHIES)
+
 func add_achieved(params: Dictionary) -> GameJoltAPIRequest:
 	var request_template: String = ""
 	var parsed_params: String = parse_parameters(params)
 	request_template = "%strophies/add-achieved/?game_id=%s&%s" % [GAME_API, GAME_ID, parsed_params]
-	return send_request(request_template, ADD_SCORE)
+	return send_request(request_template, ADD_ACHIEVED)
 
+func remove_achieved(params: Dictionary) -> GameJoltAPIRequest:
+	var request_template: String = ""
+	var parsed_params: String = parse_parameters(params)
+	request_template = "%strophies/remove-achieved/?game_id=%s&%s" % [GAME_API, GAME_ID, parsed_params]
+	return send_request(request_template, REMOVE_ACHIEVED)
 
 #-- REQUEST CONSTRUCTION 
 
@@ -42,9 +53,13 @@ func parse_parameters(params: Dictionary) -> String:
 	var params_parsed: PoolStringArray = []
 	var params_name: PoolStringArray = params.keys()
 	for param_name in params_name:
-		 params_parsed.append("%s=%s" % [param_name, params[param_name]])
+		var param_value = parse_boolean(params[param_name]) if typeof(params[param_name]) == TYPE_BOOL else params[param_name]
+		params_parsed.append("%s=%s" % [param_name, param_value])
 	parse_result = params_parsed.join("&") 
 	return parse_result
+
+func parse_boolean(value: bool) -> String:
+	return "true" if value else "false"
 
 func sign_request(request_url: String) -> String:
 	var signed_request: String = ""

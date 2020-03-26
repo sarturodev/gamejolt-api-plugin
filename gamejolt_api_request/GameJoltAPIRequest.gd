@@ -1,10 +1,11 @@
 extends HTTPRequest
 class_name GameJoltAPIRequest
 var action: int 
+var error_message : String 
 signal API_request_completed(data)
-signal API_request_failed
+signal API_request_failed(error_message)
 
-# Called when the node enters the scene tree for the first time.
+
 func _ready():
 	connect("request_completed", self, "_on_request_completed")
 
@@ -16,7 +17,7 @@ func _on_request_completed(result: int, response_code: int, headers: PoolStringA
 	if result == HTTPRequest.RESULT_SUCCESS:
 		var response: Dictionary = JSON.parse(body.get_string_from_utf8()).result.response
 		var data: Array
-		if response.success:
+		if response.success and not response.has("message"):
 			match action:
 				GameJoltAPI.ADD_SCORE:
 					data = []
@@ -24,16 +25,19 @@ func _on_request_completed(result: int, response_code: int, headers: PoolStringA
 					data = [response.rank]
 				GameJoltAPI.FETCH_SCORE:
 					data = response.scores
+				GameJoltAPI.FETCH_TROPHIES:
+					data = response.trophies
 				GameJoltAPI.ADD_ACHIEVED:
 					data = []
+				GameJoltAPI.REMOVE_ACHIEVED:
+					data = []
 			emit_signal("API_request_completed", data)
-			print(response.message)
 		else:
-			print_debug("Error: ")
-			print_debug("Message: " + response.message)
-			emit_signal("API_request_failed")
+			error_message = response.message
+			print_debug("Errror: ", error_message)
+			emit_signal("API_request_failed", error_message)
 	else:
-		print_debug("Error: ")
-		print_debug("Result: " + result as String)
-		emit_signal("API_request_failed")
+		error_message = "response code " + result as String
+		print_debug("Error: ", error_message)
+		emit_signal("API_request_failed", error_message)
 	queue_free() #Delete the node
