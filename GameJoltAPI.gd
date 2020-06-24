@@ -3,8 +3,21 @@ extends Node
 const GAME_API: String =  "https://api.gamejolt.com/api/game/v1_2/"
 const GAME_ID : String = "478958"
 const SECURE_KEY: String = "f9e9a1077e7d5d77727bd9e81f0c4192"
+var username: String = ""
+var game_token: String = ""
 enum {NONE, ADD_SCORE, GET_RANK, FETCH_SCORE, FETCH_TROPHIES, ADD_ACHIEVED, REMOVE_ACHIEVED}
 var GameJoltAPIRequest = preload("res://utils/gamejolt_api/gamejolt_api_request/GameJoltAPIRequest.tscn")
+
+
+# Get username and game token (only avaliable for HTML5 games)
+func get_web_user_credentials() -> void:
+	if OS.has_feature('JavaScript'):
+		username = JavaScript.eval("new URLSearchParams(window.location.search).get('gjapi_username') || ''")  
+		game_token = JavaScript.eval("new URLSearchParams(window.location.search).get('gjapi_token') || ''")
+		if username != "" and game_token != "":
+			print_debug("Error: Cannot get the user credentials")
+	else:
+		print_debug("Error: JavaScript is not soported")
 
 #--- SCORES
 
@@ -54,12 +67,15 @@ func parse_parameters(params: Dictionary) -> String:
 	var params_name: PoolStringArray = params.keys()
 	for param_name in params_name:
 		var param_value = parse_boolean(params[param_name]) if typeof(params[param_name]) == TYPE_BOOL else params[param_name]
-		params_parsed.append("%s=%s" % [param_name, param_value])
+		params_parsed.append("%s=%s" % [param_name, parse_blank_spaces(param_value)])
 	parse_result = params_parsed.join("&") 
 	return parse_result
 
 func parse_boolean(value: bool) -> String:
 	return "true" if value else "false"
+	
+func parse_blank_spaces(value: String) -> String:
+	return value.replace(" ", "%20")
 
 func sign_request(request_url: String) -> String:
 	var signed_request: String = ""
