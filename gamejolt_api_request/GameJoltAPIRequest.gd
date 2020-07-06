@@ -12,9 +12,9 @@ func _ready():
 	connect("request_completed", self, "_on_request_completed")
 
 func send(request_url: String, action_requested: int) -> void:
-	print(request_url)
 	if request_url != "":
 		action = action_requested
+		print(request_url)
 		request(request_url)
 	else:
 		emit_signal("api_request_failed", "An error occurred when trying to make the request (check the API configuration)")

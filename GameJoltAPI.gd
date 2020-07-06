@@ -1,11 +1,10 @@
 extends Node
 #-- API Settings
-const GAME_API: String =  "https://api.gamejolt.com/api/game/v1_2"
+const GAME_API: String =  "api.gamejolt.com/api/game/v1_2"
 var GAME_ID : String = ""
 var SECURE_KEY: String = ""
 var username: String = ""
 var game_token: String = ""
-
 
 var GameJoltAPIRequestNode = preload("res://addons/gamejolt_api/gamejolt_api_request/GameJoltAPIRequest.tscn")
 
@@ -31,46 +30,47 @@ func set_game_credentials(params: Dictionary) -> void:
 
 #--- SCORES
 
-func add_score(params: Dictionary) -> GameJoltAPIRequest:
-	var request: String = construct_request("/scores/add/", params)
+func add_score(params: Dictionary, options: Dictionary = {"ssl": true}) -> GameJoltAPIRequest:
+	var request: String = construct_request("/scores/add/", params, options)
 	return send_request(request, GameJoltAPIRequest.ADD_SCORE)
 
-func get_rank(params: Dictionary) -> GameJoltAPIRequest:
-	var request: String = construct_request("/scores/get-rank/", params)
+func get_rank(params: Dictionary, options: Dictionary = {"ssl": true}) -> GameJoltAPIRequest:
+	var request: String = construct_request("/scores/get-rank/", params, options)
 	return send_request(request, GameJoltAPIRequest.GET_RANK)
 
-func fetch_score(params: Dictionary) -> GameJoltAPIRequest:
-	var request: String = construct_request("/scores/", params)
+func fetch_score(params: Dictionary, options: Dictionary = {"ssl": true}) -> GameJoltAPIRequest:
+	var request: String = construct_request("/scores/", params, options)
 	return send_request(request, GameJoltAPIRequest.FETCH_SCORE)
 
 #--- TROPHIES
 
-func fetch_trophies(params: Dictionary) -> GameJoltAPIRequest:
-	var request: String = construct_request("/trophies/", params)
+func fetch_trophies(params: Dictionary, options: Dictionary = {"ssl": true}) -> GameJoltAPIRequest:
+	var request: String = construct_request("/trophies/", params, options)
 	return send_request(request, GameJoltAPIRequest.FETCH_TROPHIES)
 
-func add_achieved(params: Dictionary) -> GameJoltAPIRequest:
-	var request: String = construct_request("/trophies/add-achieved/", params)
+func add_achieved(params: Dictionary, options: Dictionary = {"ssl": true}) -> GameJoltAPIRequest:
+	var request: String = construct_request("/trophies/add-achieved/", params, options)
 	return send_request(request, GameJoltAPIRequest.ADD_ACHIEVED)
 
-func remove_achieved(params: Dictionary) -> GameJoltAPIRequest:
-	var request: String = construct_request("/trophies/remove-achieved/", params)
+func remove_achieved(params: Dictionary, options: Dictionary = {"ssl": true}) -> GameJoltAPIRequest:
+	var request: String = construct_request("/trophies/remove-achieved/", params, options)
 	return send_request(request, GameJoltAPIRequest.REMOVE_ACHIEVED)
 
 #Custom request
-func create_request(endpoint:String, params: Dictionary, options: Dictionary = {})-> GameJoltAPIRequest:
-	var request: String = construct_request(endpoint, params)
+func create_request(endpoint:String, params: Dictionary, options: Dictionary = {"ssl": true})-> GameJoltAPIRequest:
+	var request: String = construct_request(endpoint, params, options)
 	return send_request(request, GameJoltAPIRequest.CUSTOM_REQUEST)
 	
 #-- REQUEST CONSTRUCTION 
-func construct_request(endpoint:String, params: Dictionary) -> String:
+func construct_request(endpoint:String, params: Dictionary, options: Dictionary) -> String:
 	#Check if the API is set up
 	if GAME_ID == "" and SECURE_KEY == "":
 		print_debug("The API is not set up");
 		return ""
 	var request_url: String = ""
+	var protocol: String = "https://" if (options.has("ssl") and options["ssl"] == true) else "http://"
 	var parsed_params: String = parse_parameters(params)
-	request_url = "%s%s?game_id=%s&%s" % [GAME_API, endpoint, GAME_ID, parsed_params]
+	request_url = "%s%s%s?game_id=%s&%s" % [protocol, GAME_API, endpoint, GAME_ID, parsed_params]
 	return request_url
 
 func parse_parameters(params: Dictionary) -> String:
