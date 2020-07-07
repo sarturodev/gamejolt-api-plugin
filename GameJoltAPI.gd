@@ -4,17 +4,17 @@ const GAME_API: String =  "api.gamejolt.com/api/game/v1_2"
 var GAME_ID : String = ""
 var SECURE_KEY: String = ""
 var username: String = ""
-var game_token: String = ""
+var user_token: String = ""
 
 var GameJoltAPIRequestNode = preload("res://addons/gamejolt_api/gamejolt_api_request/GameJoltAPIRequest.tscn")
-
+var GameJoltAPIPromiseNode = preload("res://addons/gamejolt_api/gamejolt_api_promise/GameJoltAPIPromise.tscn")
 
 # Get username and game token (only available for HTML5 games)
 func get_web_user_credentials() -> void:
 	if OS.has_feature('JavaScript'):
 		username = JavaScript.eval("new URLSearchParams(window.location.search).get('gjapi_username') || ''")  
-		game_token = JavaScript.eval("new URLSearchParams(window.location.search).get('gjapi_token') || ''")
-		if username != "" and game_token != "":
+		user_token = JavaScript.eval("new URLSearchParams(window.location.search).get('gjapi_token') || ''")
+		if username != "" and user_token != "":
 			print_debug("Error: Cannot get the user credentials")
 	else:
 		print_debug("Error: JavaScript is not supported")
@@ -101,5 +101,8 @@ func send_request(request: String, action: int ) -> GameJoltAPIRequest:
 	add_child(api_request)
 	api_request.send(signed_request, action)
 	return api_request
-
-
+	
+func create_promise(requests:Array, target: Node, resolve_method: String, reject_method: String) -> void:
+	var promise: GameJoltAPIPromise = GameJoltAPIPromiseNode.instance()
+	add_child(promise)
+	promise.initialize(requests, target, resolve_method, reject_method, "api_request_completed", "api_request_failed")

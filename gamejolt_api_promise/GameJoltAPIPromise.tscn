@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://addons/gamejolt_api/gamejolt_api_promise/GameJoltAPIPromise.gd" type="Script" id=1]
+
+[node name="GameJoltAPIPromise" type="Node"]
+script = ExtResource( 1 )

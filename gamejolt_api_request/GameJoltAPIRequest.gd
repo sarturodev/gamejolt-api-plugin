@@ -14,7 +14,6 @@ func _ready():
 func send(request_url: String, action_requested: int) -> void:
 	if request_url != "":
 		action = action_requested
-		print(request_url)
 		request(request_url)
 	else:
 		emit_signal("api_request_failed", "An error occurred when trying to make the request (check the API configuration)")
