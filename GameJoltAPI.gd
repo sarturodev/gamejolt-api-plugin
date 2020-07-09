@@ -102,7 +102,7 @@ func send_request(request: String, action: int ) -> GameJoltAPIRequest:
 	api_request.send(signed_request, action)
 	return api_request
 	
-func create_promise(requests:Array, target: Node, resolve_method: String, reject_method: String) -> void:
+func handle_requests(requests:Array, target: Node, resolve_method: String, reject_method: String = "") -> void:
 	var promise: GameJoltAPIPromise = GameJoltAPIPromiseNode.instance()
 	add_child(promise)
-	promise.initialize(requests, target, resolve_method, reject_method, "api_request_completed", "api_request_failed")
+	promise.initialize(requests, target, "api_request_completed", resolve_method, "api_request_failed", reject_method)

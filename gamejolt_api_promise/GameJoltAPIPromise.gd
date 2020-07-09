@@ -10,9 +10,9 @@ var output: Array = []
 signal resolved(output)
 signal rejected(error)
 
-func initialize(_tasks: Array, _target: Node, _resolve_method: String, _reject_method: String, resolve_event: String, reject_event: String):
+func initialize(_tasks: Array, _target: Node, resolve_event: String, _resolve_method: String, reject_event: String = "", _reject_method: String = ""):
 	#Initial validation
-	if _tasks.size() > 0 and _target != null and _resolve_method != "" and _reject_method != "" and resolve_event != "" and reject_event != "":  
+	if _tasks.size() > 0 and _target != null and resolve_event != "" and _resolve_method != "":  
 		tasks = _tasks
 		unsolved_tasks = tasks.size()
 		target = _target
@@ -28,10 +28,12 @@ func connect_to_signals(resolve_event: String, reject_event: String) -> void:
 	#Connect the promise to each task's events
 	for task_index in range(0, tasks.size()):
 		tasks[task_index].connect(resolve_event,  self, "_on_task_resolved", [task_index])
-		tasks[task_index].connect(reject_event, self, "_on_task_rejected") 
+		if reject_event != "":
+			tasks[task_index].connect(reject_event, self, "_on_task_rejected") 
 	#Connect the promise to the target's methods
 	self.connect("resolved", target, resolve_method)
-	self.connect("rejected", target, reject_method)
+	if reject_method != "":
+		self.connect("rejected", target, reject_method)
 
 func init_output_array():
 	var number_of_tasks = tasks.size()
