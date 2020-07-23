@@ -1,11 +1,11 @@
 # GameJoltAPI Plugin V 1.0
 
-This plugin for Godot 3.2 allows you to easily implement the [**Gamejolt API**](https://gamejolt.com/game-api) into your games.
+This plugin for Godot 3.2 allows you to easily implement the [**Game Jolt API**](https://gamejolt.com/game-api) into your games.
 
  - Quick installation and configuration (see the Get Started section).
  - Use the API by calling simple GD functions (see the Documentation page).
  - Make custom API requests.
- - Create and handle simultaneous Gamejolt API requests. 
+ - Create and handle simultaneous Game Jolt API requests. 
 
 # Get started
 ## Instalation
@@ -14,18 +14,18 @@ This plugin for Godot 3.2 allows you to easily implement the [**Gamejolt API**](
  
  2. To activate/deactivate the plugin, go to `Project>Project Settings>Plugins`, and change its status.
  
-Once installed, the plugin will automatically configure and load the **GameJoltAPI** scene as an Singleton Object.  To use the API just call the GamejoltAPI's functions.
+Once installed, the plugin will automatically configure and load the **GameJoltAPI** scene as an Singleton Object.  To use the API just call the GameJoltAPI's functions.
 
 ## Configuration
 
 Use the following function to set up the Game API settings:
 ``` GDscript
-  GamejoltAPI.set_game_credentials({
+  GameJoltAPI.set_game_credentials({
   "game_id": "YOUR GAME ID",
   "private_key": "YOUR PRIVATE KEY"
   })
 ``` 
-You can find this information in Gamejolt, by going to `Game Page > Manage Game > Game API > API Settings`.
+You can find this information in Game Jolt, by going to `Game Page > Manage Game > Game API > API Settings`.
 
 **You must call this function before making a request.**
 
@@ -34,7 +34,7 @@ You can find this information in Gamejolt, by going to `Game Page > Manage Game 
 If your project will be exported as an **HTML5 game**, you can use the following function:
 
 ```GDscript
-  GameJoltAPI.get_web_user_credentials()
+  GameJoltAPI.get_user_credentials()
  ```
 You can manually gather the credentials of the player within the game and assign the following variables:
 ```GDscript
@@ -42,7 +42,7 @@ You can manually gather the credentials of the player within the game and assign
   GameJoltAPI.user_token = "PLAYER'S GAME TOKEN"
  ```
 
-## Make your first GAMEJOLT API request
+## Make your first GAME JOLT API request
 Once you have set up de API, you are ready to make  API requests.
 
 ### Let's create a trophy!
@@ -51,7 +51,7 @@ You can add a new trophy by going to `Game Page > Manage Game > Game API > Troph
 
 ### Let's make a request to the API
 
-Let's make the player receive the trophy in the game by calling the following function:
+Let's make the player achieve the trophy in the game by calling the following function:
 
 ```GDscript
 	var trophy_request = GameJoltAPI.add_achieved({
@@ -60,12 +60,12 @@ Let's make the player receive the trophy in the game by calling the following fu
 		"trophy_id": "YOUR TROPHY ID"
 	})
  ```
- Note that we are using all the required parameters (except the `game_id`) to make the API request: `Add Achieved` (for more information, go to the official [Gamejolt API documentation](https://gamejolt.com/game-api/doc/trophies/add-achieved)).
+ Note that we are using all the required parameters (except the `game_id`) to make the API request: `Add Achieved` (for more information, go to the official [Game Jolt API documentation](https://gamejolt.com/game-api/doc/trophies/add-achieved)).
 
 ### Handle the API response:
-The Gamejolt API request can emit the folllowing signals:
+The Game Jolt API request can emit the folllowing signals:
 
- - `api_request_completed`: This signal will be emitted when the request was successfully processed by the Gamejolt Server. This signal will return an Array containing the server response.
+ - `api_request_completed`: This signal will be emitted when the request was successfully processed by the Game Jolt Server. This signal will return an Array containing the server response.
  - `api_request_failed`: This signal will be emitted if an error occurs during the sending or processing stage of the request. This signal will return an `error` message.
  
 These signals can be connected via GDScript: 
@@ -96,8 +96,8 @@ In addition to the available functions, you can make your own custom requests:
 		var custom_request = GameJoltAPI.create_request(
 		"/trophies/",
 		{
-        "username": GamejoltAPI.username, 
-        "user_token":GameJoltAPI.user_token
+        "username": GameJoltAPI.username, 
+        "user_token": GameJoltAPI.user_token
 		})
 		#Connect to the signals:
 		custom_request.connect("api_request_completed", self, "_on_custom_request_completed")
@@ -110,19 +110,19 @@ Remember, you must introduce all the required API parameters (except the "game_i
 Imagine that you want to show a message to the player once his score has been registered and he has obtained a trophy:
 
  ```GDscript
-  #request 1
-  var score_request = GameJoltAPI.add_score({
-  "username": GameJoltAPI.username,
-  "user_token": GameJoltAPI.user_token,
-  "score": player_score
-  "sort": player_score
-  })
-  #request 2
-  var trophy_request = GameJoltAPI.add_achieved({
-  "username": GameJoltAPI.username,
-  "user_token": GameJoltAPI.user_token,
-  "trophy_id": "124565"
-  })
+	  #request 1
+	  var score_request = GameJoltAPI.add_score({
+	  "username": GameJoltAPI.username,
+	  "user_token": GameJoltAPI.user_token,
+	  "score": player_score
+	  "sort": player_score
+	  })
+	  #request 2
+	  var trophy_request = GameJoltAPI.add_achieved({
+	  "username": GameJoltAPI.username,
+	  "user_token": GameJoltAPI.user_token,
+	  "trophy_id": "124565"
+	  })
 
 	#Handle the API requests
 	GameJoltAPI.handle_requests(
@@ -146,4 +146,4 @@ Otherwise, if an error occurs in one of the requests, the function `_on_requests
     pass
   ```
 And that's it! If you want more information about the available functions, check out the Documentation page.
-If you want to know more about the Gamejolt API, check the [**Official Documentation**](https://gamejolt.com/game-api).
+If you want to know more about the Game Jolt API, check the [**Official Documentation**](https://gamejolt.com/game-api).
