@@ -45,7 +45,7 @@ You can manually gather the credentials of the player within the game and assign
  ```
 
 ## Make your first GAME JOLT API request
-Once you have set up de API, you are ready to make API requests.
+Once you have set up the API, you are ready to make API requests.
 
 ### Let's create a trophy!
 
@@ -67,7 +67,7 @@ var trophy_request = GameJoltAPI.add_achieved({
 ### Handle the API response:
 The Game Jolt API request can emit the folllowing signals:
 
- - `api_request_completed`: This signal will be emitted when the request was successfully processed by the Game Jolt Server. This signal will return an Array containing the server response.
+ - `api_request_completed`: This signal will be emitted when the request is successfully processed by the Game Jolt Server. This signal will return an Array containing the server response.
  - `api_request_failed`: This signal will be emitted if an error occurs during the sending or processing stage of the request. This signal will return an `error` message.
  
 These signals can be connected via GDScript: 
@@ -109,7 +109,7 @@ Remember, you must introduce all the required API parameters (except the "game_i
 ## Handle multiple API requests
  The `handle_requests` function allows you to trigger an action when all requests have been successfully completed. If one of the requests fails, you can trigger another action instead (this is optional).
  
-Imagine that you want to show a message to the player once his score has been registered and he has obtained a trophy:
+Imagine that you want to show a message to the player once their score has been registered and they have obtained a trophy:
 
  ```GDscript
 #request 1
