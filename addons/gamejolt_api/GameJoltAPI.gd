@@ -2,7 +2,7 @@ extends Node
 #-- API Settings
 const GAME_API: String =  "api.gamejolt.com/api/game/v1_2"
 var GAME_ID : String = ""
-var SECURE_KEY: String = ""
+var PRIVATE_KEY: String = ""
 var username: String = ""
 var user_token: String = ""
 
@@ -10,7 +10,7 @@ var GameJoltAPIRequestNode = preload("res://addons/gamejolt_api/gamejolt_api_req
 var GameJoltAPIPromiseNode = preload("res://addons/gamejolt_api/gamejolt_api_promise/GameJoltAPIPromise.tscn")
 
 # Get username and game token (only available for HTML5 games)
-func get_web_user_credentials() -> void:
+func get_user_credentials() -> void:
 	if OS.has_feature('JavaScript'):
 		username = JavaScript.eval("new URLSearchParams(window.location.search).get('gjapi_username') || ''")  
 		user_token = JavaScript.eval("new URLSearchParams(window.location.search).get('gjapi_token') || ''")
@@ -20,10 +20,10 @@ func get_web_user_credentials() -> void:
 		print_debug("Error: JavaScript is not supported")
 
 func set_game_credentials(params: Dictionary) -> void:
-	if params["game_id"] && params["secure_key"]:
-		if params["game_id"] is String and params["secure_key"] is String:
+	if params["game_id"] && params["private_key"]:
+		if params["game_id"] is String and params["private_key"] is String:
 			GAME_ID = params["game_id"]
-			SECURE_KEY = params["secure_key"]
+			PRIVATE_KEY = params["private_key"]
 	else:
 		print_debug("Error: Game credentials cannot be set up")
 	pass
@@ -42,9 +42,13 @@ func fetch_score(params: Dictionary, options: Dictionary = {"ssl": true}) -> Gam
 	var request: String = construct_request("/scores/", params, options)
 	return send_request(request, GameJoltAPIRequest.FETCH_SCORE)
 
+func tables(options: Dictionary = {"ssl": true}) -> GameJoltAPIRequest:
+	var request: String = construct_request("/scores/tables", {}, options)
+	return send_request(request, GameJoltAPIRequest.TABLES)
+
 #--- TROPHIES
 
-func fetch_trophies(params: Dictionary, options: Dictionary = {"ssl": true}) -> GameJoltAPIRequest:
+func fetch_trophy(params: Dictionary, options: Dictionary = {"ssl": true}) -> GameJoltAPIRequest:
 	var request: String = construct_request("/trophies/", params, options)
 	return send_request(request, GameJoltAPIRequest.FETCH_TROPHIES)
 
@@ -64,13 +68,16 @@ func create_request(endpoint:String, params: Dictionary, options: Dictionary = {
 #-- REQUEST CONSTRUCTION 
 func construct_request(endpoint:String, params: Dictionary, options: Dictionary) -> String:
 	#Check if the API is set up
-	if GAME_ID == "" and SECURE_KEY == "":
+	if GAME_ID == "" and PRIVATE_KEY == "":
 		print_debug("The API is not set up");
 		return ""
 	var request_url: String = ""
 	var protocol: String = "https://" if (options.has("ssl") and options["ssl"] == true) else "http://"
 	var parsed_params: String = parse_parameters(params)
-	request_url = "%s%s%s?game_id=%s&%s" % [protocol, GAME_API, endpoint, GAME_ID, parsed_params]
+	if parsed_params == "":
+		request_url = "%s%s%s?game_id=%s" % [protocol, GAME_API, endpoint, GAME_ID]
+	else:
+		request_url = "%s%s%s?game_id=%s&%s" % [protocol, GAME_API, endpoint, GAME_ID, parsed_params]
 	return request_url
 
 func parse_parameters(params: Dictionary) -> String:
@@ -91,7 +98,7 @@ func parse_blank_spaces(value: String) -> String:
 
 func sign_request(request_url: String) -> String:
 	var signed_request: String = ""
-	var signature: String = (request_url + SECURE_KEY).md5_text()
+	var signature: String = (request_url + PRIVATE_KEY).md5_text()
 	signed_request = "%s&signature=%s" % [request_url, signature]
 	return signed_request
 
@@ -102,7 +109,7 @@ func send_request(request: String, action: int ) -> GameJoltAPIRequest:
 	api_request.send(signed_request, action)
 	return api_request
 	
-func handle_requests(requests:Array, target: Node, resolve_method: String, reject_method: String = "") -> void:
+func handle_requests(requests:Array, target: Node, resolve_action: String, reject_action: String = "") -> void:
 	var promise: GameJoltAPIPromise = GameJoltAPIPromiseNode.instance()
 	add_child(promise)
-	promise.initialize(requests, target, "api_request_completed", resolve_method, "api_request_failed", reject_method)
+	promise.initialize(requests, target, "api_request_completed", resolve_action, "api_request_failed", reject_action)

@@ -3,7 +3,7 @@ class_name GameJoltAPIRequest
 var action: int 
 var data
 var error_message : String 
-enum {NONE, CUSTOM_REQUEST, ADD_SCORE, GET_RANK, FETCH_SCORE, FETCH_TROPHIES, ADD_ACHIEVED, REMOVE_ACHIEVED}
+enum {NONE, CUSTOM_REQUEST, ADD_SCORE, GET_RANK, FETCH_SCORE, TABLES, FETCH_TROPHIES, ADD_ACHIEVED, REMOVE_ACHIEVED}
 signal api_request_completed(data)
 signal api_request_failed(error_message)
 
@@ -33,6 +33,8 @@ func _on_request_completed(result: int, response_code: int, headers: PoolStringA
 						data = [response.rank]
 					FETCH_SCORE:
 						data = response.scores
+					TABLES:
+						data = [response.tables]
 					FETCH_TROPHIES:
 						data = response.trophies
 					ADD_ACHIEVED:
