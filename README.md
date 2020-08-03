@@ -10,7 +10,7 @@ This plugin for Godot 3.2 allows you to easily implement the [**Game Jolt API**]
  [**Download**](https://gamejolt.com/games/ambush_fish/512872) the sample Godot project!
 
 # Get started
-## Instalation
+## Installation
 
  1. Copy and paste the folder `gamejolt_api` in the `res://addons/` path from your project.
  
