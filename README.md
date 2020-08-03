@@ -16,7 +16,7 @@ This plugin for Godot 3.2 allows you to easily implement the [**Game Jolt API**]
  
  2. To activate/deactivate the plugin, go to `Project>Project Settings>Plugins`, and change its status.
  
-Once installed, the plugin will automatically configure and load the **GameJoltAPI** scene as an Singleton Object.  To use the API just call the GameJoltAPI's functions.
+Once installed, the plugin will automatically configure and load the **GameJoltAPI** scene as a Singleton Object.  To use the API just call the GameJoltAPI's functions.
 
 ## Configuration
 
@@ -65,7 +65,7 @@ var trophy_request = GameJoltAPI.add_achieved({
  Note that we are using all the required parameters (except the `game_id`) to make the API request: `Add Achieved` (for more information, go to the official [Game Jolt API documentation](https://gamejolt.com/game-api/doc/trophies/add-achieved)).
 
 ### Handle the API response:
-The Game Jolt API request can emit the folllowing signals:
+The Game Jolt API request can emit the following signals:
 
  - `api_request_completed`: This signal will be emitted when the request is successfully processed by the Game Jolt Server. This signal will return an Array containing the server response.
  - `api_request_failed`: This signal will be emitted if an error occurs during the sending or processing stage of the request. This signal will return an `error` message.
@@ -82,14 +82,14 @@ self, "_on_request_failed")
  ```
 The following functions will be executed when the signals are emitted:
  ```GDscript
-function _on_request_completed(data: Array) -> void:
+func _on_request_completed(data: Array):
   #Do something
   pass
-function _on_request_failed(error: String) -> void:
+func _on_request_failed(error: String):
   #Do something
   pass
   ```
-For more information about the GamejoltAPI' functions, check the Documentation page.
+For more information about the GamejoltAPI' functions, check the [**Documentation**](https://github.com/sarturodev/gamejolt-api-plugin/wiki).
 
 ## Make a custom request
 In addition to the available functions, you can make your own custom requests:
@@ -119,11 +119,11 @@ var score_request = GameJoltAPI.add_score({
   "score": player_score,
   "sort": player_score
 })
+
 #request 2
 var trophy_request = GameJoltAPI.add_achieved({
   "username": GameJoltAPI.username,
-  "user_token": GameJoltAPI.user_token,
-  "trophy_id": "124565"
+  "user_token": GameJoltAPI.user_token
 })
 
 #Handle the API requests
