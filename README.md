@@ -5,7 +5,9 @@ This plugin for Godot 3.2 allows you to easily implement the [**Game Jolt API**]
  - Quick installation and configuration (see the Get Started section).
  - Use the API by calling simple GD functions (see the [Documentation](https://github.com/sarturodev/gamejolt-api-plugin/wiki) page).
  - Make custom API requests.
- - Create and handle simultaneous Game Jolt API requests. 
+ - Create and handle simultaneous Game Jolt API requests.
+ 
+ [**Download**](https://gamejolt.com/games/ambush_fish/512872) the godot sample project!
 
 # Get started
 ## Instalation
@@ -154,4 +156,5 @@ Remember to add **.crt** as filter so the exporter recognizes this when exportin
 
 And that's it! If you want more information about the available functions, check out the [**Documentation**](https://github.com/sarturodev/gamejolt-api-plugin/wiki).
 If you want to know more about the Game Jolt API, check the [**Official Documentation**](https://gamejolt.com/game-api).
+[**Download**](https://gamejolt.com/games/ambush_fish/512872) the sample godot project.
 
