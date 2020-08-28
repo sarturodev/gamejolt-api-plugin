@@ -12,9 +12,11 @@ This plugin for Godot 3.2 allows you to easily implement the [**Game Jolt API**]
 # Get started
 ## Installation
 
- 1. Copy and paste the folder `gamejolt_api` in the `res://addons/` path from your project.
+ 1. Create the `addons` folder in the project's root path.
  
- 2. To activate/deactivate the plugin, go to `Project>Project Settings>Plugins`, and change its status.
+ 2. Copy and paste the folder `gamejolt_api` in the `res://addons/` path from your project.
+ 
+ 3. To activate/deactivate the plugin, go to `Project>Project Settings>Plugins`, and change its status.
  
 Once installed, the plugin will automatically configure and load the **GameJoltAPI** scene as a Singleton Object.  To use the API just call the GameJoltAPI's functions.
 
