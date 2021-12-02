@@ -3,6 +3,7 @@ class_name GameJoltAPIRequest
 var action: int 
 var data
 var error_message : String 
+var errors_output_enabled: bool = true #Error logs is enabled by default
 enum {NONE, CUSTOM_REQUEST, ADD_SCORE, GET_RANK, FETCH_SCORE, TABLES, FETCH_TROPHIES, ADD_ACHIEVED, REMOVE_ACHIEVED}
 signal api_request_completed(data)
 signal api_request_failed(error_message)
@@ -43,9 +44,10 @@ func _on_request_completed(result: int, response_code: int, headers: PoolStringA
 						data = []
 				emit_signal("api_request_completed", data)
 			else:
-				error_message = response.message
-				print_debug("Error: ", error_message)
-				self.emit_signal("api_request_failed", error_message)
+					error_message = response.message
+					self.emit_signal("api_request_failed", error_message)
+					if (errors_output_enabled):
+						print_debug("Error: ", error_message)
 				
 		else:
 			error_message = "Invalid request"
@@ -56,4 +58,3 @@ func _on_request_completed(result: int, response_code: int, headers: PoolStringA
 		print_debug("Error: ", error_message)
 		emit_signal("api_request_failed", error_message)
 	queue_free() #Delete the node
-

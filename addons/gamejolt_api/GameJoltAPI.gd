@@ -5,7 +5,7 @@ var GAME_ID : String = ""
 var PRIVATE_KEY: String = ""
 var username: String = ""
 var user_token: String = ""
-
+var api_errors_enabled: bool = true #API error output is enabled by default
 var GameJoltAPIRequestNode = preload("res://addons/gamejolt_api/gamejolt_api_request/GameJoltAPIRequest.tscn")
 var GameJoltAPIPromiseNode = preload("res://addons/gamejolt_api/gamejolt_api_promise/GameJoltAPIPromise.tscn")
 
@@ -27,6 +27,13 @@ func set_game_credentials(params: Dictionary) -> void:
 	else:
 		print_debug("Error: Game credentials cannot be set up")
 	pass
+
+# Error Logs
+func enable_error_logs(new_value: bool) -> void:
+	if new_value is bool:
+		api_errors_enabled = new_value
+	else:
+		print_debug("Error: Invalid value")
 
 #--- SCORES
 
@@ -106,6 +113,7 @@ func send_request(request: String, action: int ) -> GameJoltAPIRequest:
 	var signed_request: String = sign_request(request)
 	var api_request: GameJoltAPIRequest = GameJoltAPIRequestNode.instance()
 	add_child(api_request)
+	api_request.errors_output_enabled = api_errors_enabled 
 	api_request.send(signed_request, action)
 	return api_request
 	
