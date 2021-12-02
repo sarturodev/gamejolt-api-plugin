@@ -28,12 +28,12 @@ func set_game_credentials(params: Dictionary) -> void:
 		print_debug("Error: Game credentials cannot be set up")
 	pass
 
-# Error Logs
-func enable_error_logs(new_value: bool) -> void:
-	if new_value is bool:
-		api_errors_enabled = new_value
-	else:
-		print_debug("Error: Invalid value")
+# API Error Logs - (enabled by default)
+func enable_error_logs() -> void:
+	api_errors_enabled = true
+	
+func disable_error_logs() -> void:
+	api_errors_enabled = false
 
 #--- SCORES
 
