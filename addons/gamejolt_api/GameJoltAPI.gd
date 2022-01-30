@@ -12,9 +12,9 @@ var GameJoltAPIPromiseNode = preload("res://addons/gamejolt_api/gamejolt_api_pro
 # Get username and game token (only available for HTML5 games)
 func get_user_credentials() -> void:
 	if OS.has_feature('JavaScript'):
-		username = JavaScript.eval("new URLSearchParams(window.location.search).get('gjapi_username') || ''")  
-		user_token = JavaScript.eval("new URLSearchParams(window.location.search).get('gjapi_token') || ''")
-		if username != "" and user_token != "":
+		username = JavaScript.eval("new URLSearchParams(window.location.search).get('gjapi_username')|| new URLSearchParams(new URL(document.querySelector('iframe').src).search).get('gjapi_username')||''")  
+		user_token = JavaScript.eval("new URLSearchParams(window.location.search).get('gjapi_token')|| new URLSearchParams(new URL(document.querySelector('iframe').src).search).get('gjapi_token')||''")
+		if username == "" and user_token == "":
 			print_debug("Error: Cannot get the user credentials")
 	else:
 		print_debug("Error: JavaScript is not supported")
