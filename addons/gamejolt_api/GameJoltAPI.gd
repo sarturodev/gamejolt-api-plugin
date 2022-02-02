@@ -85,7 +85,7 @@ func construct_request(endpoint:String, params: Dictionary, options: Dictionary)
 		request_url = "%s%s%s?game_id=%s" % [protocol, GAME_API, endpoint, GAME_ID]
 	else:
 		request_url = "%s%s%s?game_id=%s&%s" % [protocol, GAME_API, endpoint, GAME_ID, parsed_params]
-	return request_url
+	return request_url.replace('"','')
 
 func parse_parameters(params: Dictionary) -> String:
 	var parse_result: String  = ""
