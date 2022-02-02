@@ -40,12 +40,12 @@ func get_credentials_from_file(path:String)-> Array:
 	return dataParsed
 
 func set_game_credentials(params: Dictionary) -> void:
-	if params["game_id"] && params["private_key"]:
+	if params.has("game_id") and params.has("private_key"):
 		if params["game_id"] is String and params["private_key"] is String:
 			GAME_ID = params["game_id"]
 			PRIVATE_KEY = params["private_key"]
 	else:
-		print_debug("Error: Game credentials cannot be set up")
+		print_debug("Error: Unable to set the Game Credentials, make sure you have entered the correct values.")
 	pass
 
 # API Error Logs - (enabled by default)
