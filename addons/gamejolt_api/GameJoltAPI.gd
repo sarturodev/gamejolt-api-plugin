@@ -8,16 +8,36 @@ var user_token: String = ""
 var api_errors_enabled: bool = true #API error output is enabled by default
 var GameJoltAPIRequestNode = preload("res://addons/gamejolt_api/gamejolt_api_request/GameJoltAPIRequest.tscn")
 var GameJoltAPIPromiseNode = preload("res://addons/gamejolt_api/gamejolt_api_promise/GameJoltAPIPromise.tscn")
-
-# Get username and game token (only available for HTML5 games)
+var PATHS_TO_GJ_CREDENTIALS = ["../.gj-credentials", "../../.gj-credentials"]; #Relative paths used to search for the .gj-credentials file
+# Get username and game token (only for Games running from:  Gamejolt Client // HTML5 Builds)
 func get_user_credentials() -> void:
 	if OS.has_feature('JavaScript'):
+		#Try to get the user gj credentials through Web Browser // HTML5 Builds
 		username = JavaScript.eval("new URLSearchParams(window.location.search).get('gjapi_username')|| new URLSearchParams(new URL(document.querySelector('iframe').src).search).get('gjapi_username')||''")  
 		user_token = JavaScript.eval("new URLSearchParams(window.location.search).get('gjapi_token')|| new URLSearchParams(new URL(document.querySelector('iframe').src).search).get('gjapi_token')||''")
-		if username == "" and user_token == "":
-			print_debug("Error: Cannot get the user credentials")
 	else:
-		print_debug("Error: JavaScript is not supported")
+		#Try to get the gj credentials by searching and parsing the .gj-credentials file // GamejoltClient
+		for path in PATHS_TO_GJ_CREDENTIALS:
+			var fileData = get_credentials_from_file(path)
+			if (fileData.size() == 2):
+				username = fileData[0]
+				user_token = fileData[1]
+	if username == "" and user_token == "":
+		print_debug("Error: Cannot get the user credentials")
+		
+func get_credentials_from_file(path:String)-> Array:
+	var dataParsed: Array = [];
+	var file = File.new()
+	file.open(path, File.READ)
+	var content = file.get_as_text()
+	if (content.length() > 0):
+		var contentArray = content.rsplit("\n")
+		if (contentArray.size() >= 3):
+			return [
+				contentArray[1],
+				contentArray[2]
+			]
+	return dataParsed
 
 func set_game_credentials(params: Dictionary) -> void:
 	if params["game_id"] && params["private_key"]:
